@@ -1,16 +1,28 @@
-import express from "express";
 import dotenv from "dotenv";
-
 dotenv.config();
 
-const app = express();
+console.log("1. dotenv loaded");
 
-const PORT = process.env.PORT || 5000;
+import app from "./app";
+console.log("2. app imported");
 
-app.get("/", (req : any, res : any) => {
-  res.send("Backend is running...");
-});
+import connectDB from "./config/db";
+console.log("3. db imported");
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+async function startServer() {
+  try {
+    console.log("4. Connecting to MongoDB...");
+    await connectDB();
+    console.log("5. MongoDB Connected");
+
+    const PORT = process.env.PORT || 5000;
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server Running on ${PORT}`);
+    });
+  } catch (err) {
+    console.error("Startup Error:", err);
+  }
+}
+
+startServer();
